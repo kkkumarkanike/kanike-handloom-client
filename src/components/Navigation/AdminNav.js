@@ -1,8 +1,16 @@
 import React from "react";
 import { Nav, Container, Navbar } from "react-bootstrap";
+import { useSelector, useDispatch } from "react-redux";
 import { LinkContainer } from "react-router-bootstrap";
+import { logout } from "../../store/actions/adminAuthActions";
 
 function AdminNav() {
+  const { admin } = useSelector((state) => state.adminAuth);
+  const dispatch = useDispatch();
+  const handleLogout = (e) => {
+    e.preventDefault();
+    dispatch(logout());
+  };
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
@@ -12,16 +20,7 @@ function AdminNav() {
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto"></Nav>
-          {false ? (
-            <Nav>
-              <LinkContainer to="/admin/signup">
-                <Nav.Link>Sign Up</Nav.Link>
-              </LinkContainer>
-              <LinkContainer to="/admin/login">
-                <Nav.Link>Login</Nav.Link>
-              </LinkContainer>
-            </Nav>
-          ) : (
+          {admin ? (
             <Nav>
               <LinkContainer to="/admin/products">
                 <Nav.Link>Products</Nav.Link>
@@ -30,7 +29,16 @@ function AdminNav() {
                 <Nav.Link>Users</Nav.Link>
               </LinkContainer>
               <LinkContainer to="/admin/logout">
-                <Nav.Link>Logout</Nav.Link>
+                <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
+              </LinkContainer>
+            </Nav>
+          ) : (
+            <Nav>
+              <LinkContainer to="/admin/signup">
+                <Nav.Link>Sign Up</Nav.Link>
+              </LinkContainer>
+              <LinkContainer to="/admin/login">
+                <Nav.Link>Login</Nav.Link>
               </LinkContainer>
             </Nav>
           )}

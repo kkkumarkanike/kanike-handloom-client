@@ -1,27 +1,60 @@
-import React from "react";
-import { Col, Form, Button } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Col, Form, Button, Row, Alert } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { adminSignup } from "../../store/actions/adminAuthActions";
 
 function AdminSignup() {
+  const { signUpSuccessMessage, signUpErrorMessage } = useSelector(
+    (state) => state.adminAuth
+  );
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+
+  const handleSignup = (e) => {
+    e.preventDefault();
+    dispatch(
+      adminSignup({
+        name,
+        email,
+        password,
+      })
+    );
+  };
+
   return (
     <div
       style={{
         display: "flex",
         alignItems: "center",
-        justifyContent: "center",
-        height: "90vh",
+        // justifyContent: "center",
+        // height: "90vh",
+        flexDirection: "column",
       }}
+      className="mt-5"
     >
-      <Col lg={4} sm={6} xs={9} className="p-5 shadow mb-5 bg-white rounded">
+      {/* <Col lg={4} sm={6} xs={9}>
+        Hi
+      </Col> */}
+      <Col
+        lg={4}
+        sm={6}
+        xs={9}
+        className="p-5 shadow mb-3 mt-10 bg-white rounded"
+      >
         <h4 className="mb-3">Admin Signup</h4>
         <Form>
           <Form.Group className="mb-2" controlId="formBasicText">
             <Form.Label>Name</Form.Label>
             <Form.Control
               size="lg"
+              value={name}
               type="text"
               placeholder="enter name"
-              onChange={(e) => console.log(e.target.val)}
+              onChange={(e) => setName(e.target.value)}
+              required
             />
           </Form.Group>
           <Form.Group className="mb-2" controlId="formBasicEmail">
@@ -29,14 +62,23 @@ function AdminSignup() {
             <Form.Control
               size="lg"
               type="email"
+              value={email}
               placeholder="enter email"
-              onChange={(e) => console.log(e.target.val)}
+              onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </Form.Group>
 
           <Form.Group className="mb-2" controlId="formBasicPassword">
             <Form.Label>Password</Form.Label>
-            <Form.Control size="lg" type="password" placeholder="password" />
+            <Form.Control
+              size="lg"
+              type="password"
+              placeholder="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
           </Form.Group>
 
           <Button
@@ -45,6 +87,7 @@ function AdminSignup() {
             className="mt-3"
             style={{ width: "100%" }}
             size="lg"
+            onClick={(e) => handleSignup(e)}
           >
             Sign up
           </Button>
@@ -52,6 +95,18 @@ function AdminSignup() {
         <p className="mt-3">
           If you have an account? please <Link to="/login">Login</Link>
         </p>
+      </Col>
+      <Col lg={4} sm={6} xs={9}>
+        {signUpErrorMessage ? (
+          <Alert variant="danger" size="lg">
+            {signUpErrorMessage}
+          </Alert>
+        ) : null}
+        {signUpSuccessMessage ? (
+          <Alert variant="success" size="lg" style={{ width: "100%" }}>
+            {signUpSuccessMessage}
+          </Alert>
+        ) : null}
       </Col>
     </div>
   );
