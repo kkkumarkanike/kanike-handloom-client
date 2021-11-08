@@ -20,6 +20,10 @@ function UpdateProductModal({ show, hideModal }) {
             <Form.Control type="text" placeholder="description" />
           </Form.Group>
           <Form.Group className="mb-1">
+            <Form.Label>Price</Form.Label>
+            <Form.Control type="number" placeholder="price" />
+          </Form.Group>
+          <Form.Group className="mb-1">
             <Form.Label>Saree Type</Form.Label>
             <Form.Select aria-label="Floating label select example">
               <option>--select--</option>

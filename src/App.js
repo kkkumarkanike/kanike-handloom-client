@@ -12,23 +12,29 @@ import UserSignup from "./components/Signup/UserSignup";
 import UserLogin from "./components/Login/UserLogin";
 import Products from "./screens/admin/Products";
 import Users from "./screens/admin/Users";
-import { storeAdminDataFromLocalStorage } from "./store/actions/adminAuthActions";
+import { storeUserDataFromLocalStorage } from "./store/actions/userAuthActions";
+import Cart from "./screens/user/Cart";
+import Favorites from "./screens/user/Favorites";
+// import { storeAdminDataFromLocalStorage } from "./store/actions/adminAuthActions";
 
 function App() {
   const { admin } = useSelector((state) => state.adminAuth);
+  const { user } = useSelector((state) => state.userAuth);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const storageAdmin = localStorage.getItem("admin");
-    if (!admin) {
-      if (storageAdmin) {
-        dispatch(storeAdminDataFromLocalStorage(JSON.parse(storageAdmin)));
+    // const storageAdmin = localStorage.getItem("admin");
+    const storageUser = localStorage.getItem("user");
+    if (!user) {
+      if (storageUser) {
+        dispatch(storeUserDataFromLocalStorage(JSON.parse(storageUser)));
       }
     }
   }, []);
   return (
     <BrowserRouter>
-      <AdminNav />
+      {/* Admin Routes */}
+      {/* <AdminNav />
       {admin ? (
         <div className="p-5">
           <Switch>
@@ -42,6 +48,24 @@ function App() {
           <Route path="/admin" exact component={AdminLogin} />
           <Route path="/admin/signup" exact component={AdminSignup} />
           <Route path="/admin/login" exact component={AdminLogin} />
+        </Switch>
+      )} */}
+
+      {/* User Routes */}
+      <UserNav />
+      {user ? (
+        <div className="p-5">
+          <Switch>
+            <Route path="/" exact component={UserHome} />
+            <Route path="/cart" exact component={Cart} />
+            <Route path="/favorites" exact component={Favorites} />
+          </Switch>
+        </div>
+      ) : (
+        <Switch>
+          <Route path="/" exact component={UserHome} />
+          <Route path="/signup" exact component={UserSignup} />
+          <Route path="/login" exact component={UserLogin} />
         </Switch>
       )}
     </BrowserRouter>
