@@ -1,11 +1,57 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
 import { Card, Row, Col, Button } from "react-bootstrap";
-import image from "../../assets/image.jpeg";
-import { FaCartPlus, FaHeart } from "react-icons/fa";
+import { FaCartPlus, FaHeart, FaShoppingCart } from "react-icons/fa";
+import {
+  addToFavorites,
+  addToCart,
+  deleteFromFavorites,
+  deleteFromCart,
+} from "../../store/actions/cartnFavActions";
 
 function ItemCard({ details }) {
+  const { user } = useSelector((state) => state.userAuth);
+  const { cart, favorites } = useSelector((state) => state.cartnFav);
+  const dispatch = useDispatch();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isInCart, setIsInCart] = useState(false);
+
+  useEffect(() => {
+    axios
+      .post("/api/cart/in-cart", { itemId: details._id, userId: user._id })
+      .then((result) => {
+        const data = result.data;
+        setIsInCart(data.inCart);
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
+    axios
+      .post("/api/favorites/in-cart", { itemId: details._id, userId: user._id })
+      .then((result) => {
+        const data = result.data;
+        setIsFavorite(data.inFavorites);
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
+  }, [details]);
+
+  const handleCartItem = () => {
+    if (isInCart) dispatch(deleteFromCart(details._id, cart));
+    else {
+      dispatch(addToCart(details, user._id));
+    }
+    setIsInCart(!isInCart);
+  };
+
+  const handleFavoriteItem = () => {
+    if (isFavorite) dispatch(deleteFromFavorites(details._id, favorites));
+    else dispatch(addToFavorites(details, user._id));
+    setIsFavorite(!isFavorite);
+  };
+
   return (
     <Col>
       <Card>
@@ -19,15 +65,15 @@ function ItemCard({ details }) {
           <Button
             variant={isInCart ? "dark" : "light"}
             size="lg"
-            onClick={() => setIsInCart(!isInCart)}
+            onClick={handleCartItem}
           >
-            <FaCartPlus size={18} />
+            {isInCart ? <FaShoppingCart size={18} /> : <FaCartPlus size={18} />}
           </Button>
           <Button
             variant={isFavorite ? "dark" : "light"}
             size="lg"
             style={{ marginLeft: "1rem" }}
-            onClick={() => setIsFavorite(!isFavorite)}
+            onClick={handleFavoriteItem}
           >
             <FaHeart size={18} />
           </Button>

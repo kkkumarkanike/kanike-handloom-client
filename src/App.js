@@ -16,6 +16,8 @@ import { storeUserDataFromLocalStorage } from "./store/actions/userAuthActions";
 import Cart from "./screens/user/Cart";
 import Favorites from "./screens/user/Favorites";
 // import { storeAdminDataFromLocalStorage } from "./store/actions/adminAuthActions";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const { admin } = useSelector((state) => state.adminAuth);
@@ -68,6 +70,7 @@ function App() {
           <Route path="/login" exact component={UserLogin} />
         </Switch>
       )}
+      <ToastContainer />
     </BrowserRouter>
   );
 }

@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import ItemCard from "../../components/User/ItemCard";
 import { Row } from "react-bootstrap";
-import { getAllSarees } from "../../store/actions/cartnFavActions";
+import {
+  getAllSarees,
+  getCartSarees,
+  getFavoriteSarees,
+} from "../../store/actions/cartnFavActions";
 
 function Home() {
   const dispatch = useDispatch();
@@ -11,6 +15,8 @@ function Home() {
   useEffect(() => {
     if (user) {
       dispatch(getAllSarees());
+      dispatch(getCartSarees(user._id));
+      dispatch(getFavoriteSarees(user._id));
     }
   }, []);
   return (
