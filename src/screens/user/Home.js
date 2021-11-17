@@ -1,24 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import ItemCard from "../../components/User/ItemCard";
 import { Row } from "react-bootstrap";
-import {
-  getAllSarees,
-  getCartSarees,
-  getFavoriteSarees,
-} from "../../store/actions/cartnFavActions";
 
 function Home() {
-  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.userAuth);
   const { sarees } = useSelector((state) => state.cartnFav);
-  useEffect(() => {
-    if (user) {
-      dispatch(getAllSarees());
-      dispatch(getCartSarees(user._id));
-      dispatch(getFavoriteSarees(user._id));
-    }
-  }, []);
+
   return (
     <div>
       {user ? (

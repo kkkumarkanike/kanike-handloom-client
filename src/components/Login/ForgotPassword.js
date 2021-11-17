@@ -1,20 +1,18 @@
 import React, { useState } from "react";
 import { Col, Form, Button, Alert } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { userSignin } from "../../store/actions/userAuthActions";
+import { getResetLink } from "../../store/actions/userAuthActions";
 
-function UserLogin() {
+function ForgotPassword() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-  const { signInErrorMessage, signInWarningMessage } = useSelector(
+  const { resetLinkSentError, resetLinkSentSuccess } = useSelector(
     (state) => state.userAuth
   );
 
   const handleSignIn = (e) => {
     e.preventDefault();
-    dispatch(userSignin(email, password));
+    dispatch(getResetLink(email));
   };
   return (
     <div
@@ -33,7 +31,7 @@ function UserLogin() {
         xs={9}
         className="p-5 shadow mb-3 mt-10 bg-white rounded"
       >
-        <h4 className="mb-3">User Login</h4>
+        <h4 className="mb-3">Get Reset Link</h4>
         <Form>
           <Form.Group className="mb-2" controlId="formBasicEmail">
             <Form.Label>Email</Form.Label>
@@ -45,24 +43,6 @@ function UserLogin() {
               onChange={(e) => setEmail(e.target.value)}
             />
           </Form.Group>
-
-          <Form.Group className="mb-2" controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              size="lg"
-              type="password"
-              placeholder="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </Form.Group>
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <Link to="/reset-password">
-              <p className="p-0 m-0" style={{ fontSize: "13px" }}>
-                Forgot password?
-              </p>
-            </Link>
-          </div>
           <Button
             variant="dark"
             type="submit"
@@ -71,22 +51,19 @@ function UserLogin() {
             size="lg"
             onClick={handleSignIn}
           >
-            Login
+            Send Link
           </Button>
         </Form>
-        <p className="mt-3">
-          If you don't have account? please <Link to="/signup">sign up</Link>
-        </p>
       </Col>
       <Col lg={4} sm={6} xs={9}>
-        {signInErrorMessage ? (
+        {resetLinkSentError ? (
           <Alert variant="danger" size="lg">
-            {signInErrorMessage}
+            {resetLinkSentError}
           </Alert>
         ) : null}
-        {signInWarningMessage ? (
-          <Alert variant="warning" size="lg">
-            {signInWarningMessage}
+        {resetLinkSentSuccess ? (
+          <Alert variant="success" size="lg">
+            {resetLinkSentSuccess}
           </Alert>
         ) : null}
       </Col>
@@ -94,4 +71,4 @@ function UserLogin() {
   );
 }
 
-export default UserLogin;
+export default ForgotPassword;

@@ -2,7 +2,7 @@ import axios from "axios";
 import * as actionTypes from "./actionTypes";
 import { toast } from "react-toastify";
 
-const displayToast = (message) => {
+const successToast = (message) => {
   return toast.success(message, {
     position: "top-center",
     autoClose: 3000,
@@ -13,7 +13,17 @@ const displayToast = (message) => {
     progress: undefined,
   });
 };
-
+const errorToast = (message) => {
+  return toast.error(message, {
+    position: "top-center",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+  });
+};
 export const getAllSarees = () => {
   return (dispatch) => {
     axios
@@ -69,7 +79,7 @@ export const addToCart = (itemInfo, userId) => {
       .then((result) => {
         const data = result.data;
         dispatch({ type: actionTypes.ADD_TO_CART, addedItem: data.item });
-        displayToast("Saree added to cart!!");
+        successToast("Saree added to cart!!");
       })
       .catch((err) => {
         console.log(err);
@@ -87,7 +97,7 @@ export const addToFavorites = (itemInfo, userId) => {
       .then((result) => {
         const data = result.data;
         dispatch({ type: actionTypes.ADD_TO_FAVORITES, addedItem: data.item });
-        displayToast("Saree added to favorites!!");
+        successToast("Saree added to favorites!!");
       })
       .catch((err) => {
         console.log(err);
@@ -102,7 +112,7 @@ export const deleteFromCart = (itemId, cartItems) => (dispatch) => {
     .then((result) => {
       const data = result.data;
       dispatch({ type: actionTypes.DELETE_CART_ITEM, deletedSaree: data.item });
-      displayToast("Saree removed from cart!!");
+      successToast("Saree removed from cart!!");
     })
     .catch((err) => {
       console.log(err);
@@ -118,9 +128,48 @@ export const deleteFromFavorites = (itemId, favItems) => (dispatch) => {
         type: actionTypes.DELETE_FAVORITE_ITEM,
         deletedSaree: data.item,
       });
-      displayToast("Saree removed from favorites!!");
+      successToast("Saree removed from favorites!!");
     })
     .catch((err) => {
       console.log(err);
+    });
+};
+
+export const completePayment =
+  (token, amount, cartItems, history) => (dispatch) => {
+    axios
+      .post("/api/billing/stripe", {
+        token,
+        amount,
+        cartItems,
+      })
+      .then((result) => {
+        const data = result.data;
+        if (data.type === "success") {
+          dispatch({ type: actionTypes.ORDER_SUCCESS, order: data.order });
+          successToast("Order successful!!");
+          history.replace("/");
+        } else {
+          errorToast("Something went wrong! Try again");
+        }
+      })
+      .catch((error) => {
+        const data = error.response.data;
+        console.log(data);
+        errorToast(data.message);
+      });
+  };
+
+export const getOrders = (userId) => (dispatch) => {
+  axios
+    .get(`/api/orders/get-orders/${userId}`)
+    .then((result) => {
+      const data = result.data;
+      console.log(data);
+      dispatch({ type: actionTypes.GET_ORDERS, orders: data.orders });
+    })
+    .catch((error) => {
+      const data = error.response.data;
+      console.log(data);
     });
 };

@@ -14,28 +14,35 @@ function ItemCard({ details }) {
   const { user } = useSelector((state) => state.userAuth);
   const { cart, favorites } = useSelector((state) => state.cartnFav);
   const dispatch = useDispatch();
-  const [isFavorite, setIsFavorite] = useState(false);
-  const [isInCart, setIsInCart] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(null);
+  const [isInCart, setIsInCart] = useState(null);
 
   useEffect(() => {
-    axios
-      .post("/api/cart/in-cart", { itemId: details._id, userId: user._id })
-      .then((result) => {
-        const data = result.data;
-        setIsInCart(data.inCart);
-      })
-      .catch((error) => {
-        console.log(error.response);
-      });
-    axios
-      .post("/api/favorites/in-cart", { itemId: details._id, userId: user._id })
-      .then((result) => {
-        const data = result.data;
-        setIsFavorite(data.inFavorites);
-      })
-      .catch((error) => {
-        console.log(error.response);
-      });
+    if (isInCart === null) {
+      axios
+        .post("/api/cart/in-cart", { itemId: details._id, userId: user._id })
+        .then((result) => {
+          const data = result.data;
+          setIsInCart(data.inCart);
+        })
+        .catch((error) => {
+          console.log(error.response);
+        });
+    }
+    if (isFavorite === null) {
+      axios
+        .post("/api/favorites/in-cart", {
+          itemId: details._id,
+          userId: user._id,
+        })
+        .then((result) => {
+          const data = result.data;
+          setIsFavorite(data.inFavorites);
+        })
+        .catch((error) => {
+          console.log(error.response);
+        });
+    }
   }, [details]);
 
   const handleCartItem = () => {

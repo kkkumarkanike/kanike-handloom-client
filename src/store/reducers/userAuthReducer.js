@@ -5,6 +5,10 @@ const initialState = {
   signUpSuccessMessage: null,
   signInErrorMessage: null,
   signInWarningMessage: null,
+  resetLinkSentError: null,
+  resetLinkSentSuccess: null,
+  resetPasswordSuccess: null,
+  resetPasswordError: null,
 };
 
 const userAuthReducer = (state = initialState, action) => {
@@ -34,10 +38,30 @@ const userAuthReducer = (state = initialState, action) => {
         ...state,
         user: action.user,
       };
+    case actionTypes.RESET_LINK_SENT_SUCCESS:
+      return {
+        ...state,
+        resetLinkSentSuccess: action.message,
+      };
+    case actionTypes.RESET_LINK_SENT_ERROR:
+      return {
+        ...state,
+        resetLinkSentError: action.message,
+      };
     case actionTypes.USER_LOG_OUT:
       return {
         ...state,
         user: null,
+      };
+    case actionTypes.RESET_PASSWORD_SUCCESS:
+      return {
+        ...state,
+        resetPasswordSuccess: action.message,
+      };
+    case actionTypes.RESET_PASSWORD_ERROR:
+      return {
+        ...state,
+        resetPasswordError: action.message,
       };
     default:
       return state;

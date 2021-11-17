@@ -4,6 +4,7 @@ const initialState = {
   cart: null,
   favorites: null,
   sarees: null,
+  orders: null,
 };
 
 const cartNfavReducer = (state = initialState, action) => {
@@ -14,11 +15,23 @@ const cartNfavReducer = (state = initialState, action) => {
         sarees: action.sarees,
       };
     case actionTypes.GET_CART_ITEMS:
+      if (action.sarees.length === 0) {
+        return {
+          ...state,
+          cart: null,
+        };
+      }
       return {
         ...state,
         cart: action.sarees,
       };
     case actionTypes.GET_FAVORITE_ITEMS:
+      if (action.sarees.length === 0) {
+        return {
+          ...state,
+          favorites: null,
+        };
+      }
       return {
         ...state,
         favorites: action.sarees,
@@ -42,10 +55,17 @@ const cartNfavReducer = (state = initialState, action) => {
       const updatedCartItems = [...state.cart].filter(
         (each) => each._id !== action.deletedSaree._id
       );
-      return {
-        ...state,
-        cart: updatedCartItems,
-      };
+      if (updatedCartItems.length === 0) {
+        return {
+          ...state,
+          cart: null,
+        };
+      } else {
+        return {
+          ...state,
+          cart: updatedCartItems,
+        };
+      }
     case actionTypes.DELETE_FAVORITE_ITEM:
       const updatedFavoriteItems = [...state.favorites].filter(
         (each) => each._id !== action.deletedSaree._id
@@ -53,6 +73,30 @@ const cartNfavReducer = (state = initialState, action) => {
       return {
         ...state,
         favorites: updatedFavoriteItems,
+      };
+    case actionTypes.ORDER_SUCCESS:
+      if (state.orders) {
+        return {
+          ...state,
+          cart: null,
+          orders: [...state.orders, action.order],
+        };
+      }
+      return {
+        ...state,
+        cart: null,
+        orders: [action.order],
+      };
+    case actionTypes.GET_ORDERS:
+      if (action.orders.length === 0) {
+        return {
+          ...state,
+          orders: null,
+        };
+      }
+      return {
+        ...state,
+        orders: action.orders,
       };
     default:
       return state;
